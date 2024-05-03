@@ -1,9 +1,10 @@
 /* Includes ---------------------------------------------------------------- */
-#include <fan_inferencing.h>
+#include <fan_v2_inferencing.h>
 #include <Wire.h>
 #include <HardwareSerial.h>
 
 /* Constant defines -------------------------------------------------------- */
+#define SERIAL_DEBUG
 #define TX 17
 #define RX 18
 
@@ -23,6 +24,13 @@ uint8_t poll_IMU(void);
 uint8_t poll_ADC(void);
 
 /* Private variables ------------------------------------------------------- */
+typedef struct
+{
+    float value;
+    int stt;
+    char *label;
+} fan_state_t;
+
 static const bool debug_nn = false; // Set this to true to see e.g. features generated from the raw signal
 static float data[N_SENSORS];
 static int iterator = 0;
@@ -49,18 +57,20 @@ Adafruit_ADXL345_Unified adxl345 = Adafruit_ADXL345_Unified(12345);
 void setup()
 {
     /* Init serial */
+#ifdef SERIAL_DEBUG
     Serial.begin(115200);
+#endif
+
     Uart1.begin(115200, SERIAL_8N1, RX, TX);
     Wire.setPins(SDA_PIN, SCL_PIN);
     Wire.begin();
-    // comment out the below line to cancel the wait for USB connection (needed for native USB)
-    while (!Serial)
-        ;
 
     /* ADXL345 */
     if (!adxl345.begin(ADXL345_DEFAULT_ADDRESS))
     {
+#ifdef SERIAL_DEBUG
         Serial.println("Could not find a valid ADXL345 sensor, check wiring!");
+#endif
         while (1)
             ;
     }
@@ -69,8 +79,9 @@ void setup()
     adxl345.setDataRate(ADXL345_DATARATE_100_HZ);
 
     ina3221.begin(SDA_PIN, SCL_PIN);
-
+#ifdef SERIAL_DEBUG
     Serial.println("Edge Impulse Sensor Fusion Inference\r\n");
+#endif
 }
 
 /**
@@ -78,12 +89,11 @@ void setup()
  */
 void loop()
 {
-    // ei_printf("\nStarting inferencing in 2 seconds...\r\n");
-
-    // delay(2000);
-
-    // ei_printf("Sampling...\r\n");
-
+#ifdef SERIAL_DEBUG
+    ei_printf("\nStarting inferencing in 2 seconds...\r\n");
+    delay(2000);
+    ei_printf("Sampling...\r\n");
+#endif
     // Allocate a buffer here for the values we'll read from the sensor
     float buffer[EI_CLASSIFIER_DSP_INPUT_FRAME_SIZE] = {0};
 
@@ -95,6 +105,16 @@ void loop()
         poll_ADC();
         poll_IMU();
 
+#ifdef SERIAL_DEBUG
+        Serial.print(data[0]);
+        Serial.print(" ");
+        Serial.print(data[1]);
+        Serial.print(" ");
+        Serial.print(data[2]);
+        Serial.print(" ");
+        Serial.print(data[3]);
+        Serial.println();
+#endif
         buffer[ix] = data[0];
         buffer[ix + 1] = data[1];
         buffer[ix + 2] = data[2];
@@ -113,7 +133,9 @@ void loop()
     int err = numpy::signal_from_buffer(buffer, EI_CLASSIFIER_DSP_INPUT_FRAME_SIZE, &signal);
     if (err != 0)
     {
+#ifdef SERIAL_DEBUG
         ei_printf("ERR:(%d)\r\n", err);
+#endif
         return;
     }
 
@@ -123,7 +145,9 @@ void loop()
     err = run_classifier(&signal, &result, debug_nn);
     if (err != EI_IMPULSE_OK)
     {
+#ifdef SERIAL_DEBUG
         ei_printf("ERR:(%d)\r\n", err);
+#endif
         return;
     }
 
@@ -133,11 +157,15 @@ void loop()
     // strcpy(state.label, "");
 
     // print the predictions
+#ifdef SERIAL_DEBUG
     ei_printf("Predictions (DSP: %d ms., Classification: %d ms., Anomaly: %d ms.):\r\n",
               result.timing.dsp, result.timing.classification, result.timing.anomaly);
+#endif
     for (size_t ix = 0; ix < EI_CLASSIFIER_LABEL_COUNT; ix++)
     {
+#ifdef SERIAL_DEBUG
         ei_printf("%s: %.5f\r\n", result.classification[ix].label, result.classification[ix].value);
+#endif
         if (state.value < result.classification[ix].value)
         {
             state.value = result.classification[ix].value;
@@ -149,8 +177,10 @@ void loop()
 #if EI_CLASSIFIER_HAS_ANOMALY == 1
     ei_printf("    anomaly score: %.3f\r\n", result.anomaly);
 #endif
-
-    Uart1.println(state.stt);
+#ifdef SERIAL_DEBUG
+    Serial.println(state.stt);
+#endif
+    Uart1.print(state.stt);
 }
 
 #if !defined(EI_CLASSIFIER_SENSOR) || (EI_CLASSIFIER_SENSOR != EI_CLASSIFIER_SENSOR_FUSION && EI_CLASSIFIER_SENSOR != EI_CLASSIFIER_SENSOR_ACCELEROMETER)
@@ -162,7 +192,9 @@ bool init_IMU(void)
     /* ADXL345 */
     if (!adxl345.begin(ADXL345_DEFAULT_ADDRESS))
     {
+#ifdef SERIAL_DEBUG
         Serial.println("Could not find a valid ADXL345 sensor, check wiring!");
+#endif
         while (1)
             ;
     }

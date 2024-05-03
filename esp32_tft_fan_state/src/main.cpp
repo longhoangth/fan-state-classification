@@ -51,7 +51,6 @@ void loop()
         broken_blades();
         break;
     default:
-        off();
         break;
     }
 }
