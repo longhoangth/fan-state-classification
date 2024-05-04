@@ -10,6 +10,10 @@ hw_timer_t *Timer0_Cfg = NULL;
 void IRAM_ATTR check_status()
 {
     count++;
+    if(count > 1000)
+    {
+        count = 0;
+    }
 }
 
 void off()
@@ -51,20 +55,20 @@ void mount_fault()
     tft.setTextColor(TFT_BLACK);
     tft.drawString("MOUNT FAULT", 35, 240);
 
-    if (count % 2 == 0)
-    {
-        tft.fillRect(0, 50, 240, 10, TFT_RED);
-        tft.fillRect(0, 50, 10, 320, TFT_RED);
-        tft.fillRect(230, 50, 10, 320, TFT_RED);
-        tft.fillRect(0, 310, 240, 10, TFT_RED);
-    }
-    else
-    {
-        tft.fillRect(0, 50, 240, 10, TFT_WHITE);
-        tft.fillRect(0, 50, 10, 320, TFT_WHITE);
-        tft.fillRect(230, 50, 10, 320, TFT_WHITE);
-        tft.fillRect(0, 310, 240, 10, TFT_WHITE);
-    }
+    // if (count % 2 == 0)
+    // {
+    //     tft.fillRect(0, 50, 240, 10, TFT_RED);
+    //     tft.fillRect(0, 50, 10, 320, TFT_RED);
+    //     tft.fillRect(230, 50, 10, 320, TFT_RED);
+    //     tft.fillRect(0, 310, 240, 10, TFT_RED);
+    // }
+    // else
+    // {
+    //     tft.fillRect(0, 50, 240, 10, TFT_WHITE);
+    //     tft.fillRect(0, 50, 10, 320, TFT_WHITE);
+    //     tft.fillRect(230, 50, 10, 320, TFT_WHITE);
+    //     tft.fillRect(0, 310, 240, 10, TFT_WHITE);
+    // }
 }
 
 void tapping()
@@ -115,20 +119,20 @@ void blade_fault()
     tft.setTextColor(TFT_BLACK);
     tft.drawString("BLADE FAULT", 40, 240);
 
-    if (count % 2 == 0)
-    {
-        tft.fillRect(0, 50, 240, 10, TFT_RED);
-        tft.fillRect(0, 50, 10, 320, TFT_RED);
-        tft.fillRect(230, 50, 10, 320, TFT_RED);
-        tft.fillRect(0, 310, 240, 10, TFT_RED);
-    }
-    else
-    {
-        tft.fillRect(0, 50, 240, 10, TFT_WHITE);
-        tft.fillRect(0, 50, 10, 320, TFT_WHITE);
-        tft.fillRect(230, 50, 10, 320, TFT_WHITE);
-        tft.fillRect(0, 310, 240, 10, TFT_WHITE);
-    }
+    // if (count % 2 == 0)
+    // {
+    //     tft.fillRect(0, 50, 240, 10, TFT_RED);
+    //     tft.fillRect(0, 50, 10, 320, TFT_RED);
+    //     tft.fillRect(230, 50, 10, 320, TFT_RED);
+    //     tft.fillRect(0, 310, 240, 10, TFT_RED);
+    // }
+    // else
+    // {
+    //     tft.fillRect(0, 50, 240, 10, TFT_WHITE);
+    //     tft.fillRect(0, 50, 10, 320, TFT_WHITE);
+    //     tft.fillRect(230, 50, 10, 320, TFT_WHITE);
+    //     tft.fillRect(0, 310, 240, 10, TFT_WHITE);
+    // }
 }
 
 void broken_blades()
@@ -140,20 +144,20 @@ void broken_blades()
     tft.setTextColor(TFT_BLACK);
     tft.drawString("BROKEN BLADE", 23, 240);
 
-    if (count % 2 == 0)
-    {
-        tft.fillRect(0, 50, 240, 10, TFT_RED);
-        tft.fillRect(0, 50, 10, 320, TFT_RED);
-        tft.fillRect(230, 50, 10, 320, TFT_RED);
-        tft.fillRect(0, 310, 240, 10, TFT_RED);
-    }
-    else
-    {
-        tft.fillRect(0, 50, 240, 10, TFT_WHITE);
-        tft.fillRect(0, 50, 10, 320, TFT_WHITE);
-        tft.fillRect(230, 50, 10, 320, TFT_WHITE);
-        tft.fillRect(0, 310, 240, 10, TFT_WHITE);
-    }
+    // if (count % 2 == 0)
+    // {
+    //     tft.fillRect(0, 50, 240, 10, TFT_RED);
+    //     tft.fillRect(0, 50, 10, 320, TFT_RED);
+    //     tft.fillRect(230, 50, 10, 320, TFT_RED);
+    //     tft.fillRect(0, 310, 240, 10, TFT_RED);
+    // }
+    // else
+    // {
+    //     tft.fillRect(0, 50, 240, 10, TFT_WHITE);
+    //     tft.fillRect(0, 50, 10, 320, TFT_WHITE);
+    //     tft.fillRect(230, 50, 10, 320, TFT_WHITE);
+    //     tft.fillRect(0, 310, 240, 10, TFT_WHITE);
+    // }
 }
 
 void setup_tft()
@@ -181,6 +185,8 @@ void setup_tft()
     tft.drawString("Embedded AIoT LAB", 20, 20);
 
     tft.drawFastHLine(10, 90, 220, TFT_BLACK);
+
+    count = 0;
 }
 
 void run_tft()

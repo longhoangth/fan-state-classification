@@ -4,7 +4,8 @@
 #include <HardwareSerial.h>
 
 /* Constant defines -------------------------------------------------------- */
-#define SERIAL_DEBUG
+// #define SERIAL_DEBUG
+
 #define TX 17
 #define RX 18
 
@@ -90,8 +91,6 @@ void setup()
 void loop()
 {
 #ifdef SERIAL_DEBUG
-    ei_printf("\nStarting inferencing in 2 seconds...\r\n");
-    delay(2000);
     ei_printf("Sampling...\r\n");
 #endif
     // Allocate a buffer here for the values we'll read from the sensor
@@ -177,10 +176,10 @@ void loop()
 #if EI_CLASSIFIER_HAS_ANOMALY == 1
     ei_printf("    anomaly score: %.3f\r\n", result.anomaly);
 #endif
-#ifdef SERIAL_DEBUG
+
     Serial.println(state.stt);
-#endif
     Uart1.print(state.stt);
+    delay(2000);
 }
 
 #if !defined(EI_CLASSIFIER_SENSOR) || (EI_CLASSIFIER_SENSOR != EI_CLASSIFIER_SENSOR_FUSION && EI_CLASSIFIER_SENSOR != EI_CLASSIFIER_SENSOR_ACCELEROMETER)
