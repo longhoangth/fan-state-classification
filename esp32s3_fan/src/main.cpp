@@ -4,7 +4,7 @@
 #include <HardwareSerial.h>
 
 /* Constant defines -------------------------------------------------------- */
-// #define SERIAL_DEBUG
+#define SERIAL_DEBUG
 
 #define TX 17
 #define RX 18
@@ -104,16 +104,6 @@ void loop()
         poll_ADC();
         poll_IMU();
 
-#ifdef SERIAL_DEBUG
-        Serial.print(data[0]);
-        Serial.print(" ");
-        Serial.print(data[1]);
-        Serial.print(" ");
-        Serial.print(data[2]);
-        Serial.print(" ");
-        Serial.print(data[3]);
-        Serial.println();
-#endif
         buffer[ix] = data[0];
         buffer[ix + 1] = data[1];
         buffer[ix + 2] = data[2];

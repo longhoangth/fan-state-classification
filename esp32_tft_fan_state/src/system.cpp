@@ -179,10 +179,10 @@ void setup_tft()
     tft.setFreeFont(&FreeSansBold9pt7b);
 
     tft.setTextColor(TFT_BLUE);
-    tft.drawString("Last event detected", 20, 70);
+    tft.drawString("Last detected event ", 20, 70);
 
     tft.setTextColor(TFT_WHITE);
-    tft.drawString("Embedded AIoT LAB", 20, 20);
+    tft.drawString("BIEN-NQ Smart Fan", 20, 20);
 
     tft.drawFastHLine(10, 90, 220, TFT_BLACK);
 

@@ -1,0 +1,18 @@
+Sampling...
+Predictions (DSP: 38 ms., Classification: 27 ms., Anomaly: 0 ms.):
+blade_fault: 0.01562
+broken_blade: 0.00000
+mount_fall: 0.00000
+off: 0.00000
+on: 0.98047
+tap: 0.00000
+4
+Sampling...
+Predictions (DSP: 38 ms., Classification: 27 ms., Anomaly: 0 ms.):
+blade_fault: 0.09766
+broken_blade: 0.00000
+mount_fall: 0.00391
+off: 0.00000
+on: 0.89062
+tap: 0.01172
+4
