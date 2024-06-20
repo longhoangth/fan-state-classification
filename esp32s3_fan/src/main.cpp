@@ -28,7 +28,8 @@ uint8_t poll_ADC(void);
 typedef struct
 {
     float value;
-    int stt;
+    int curr_index = -1;
+    int prev_index = -1;
     char *label;
 } fan_state_t;
 
@@ -142,7 +143,7 @@ void loop()
 
     /* Reset fan state */
     state.value = 0.0;
-    state.stt = -1;
+    state.curr_index = -1;
     // strcpy(state.label, "");
 
     // print the predictions
@@ -158,7 +159,7 @@ void loop()
         if (state.value < result.classification[ix].value)
         {
             state.value = result.classification[ix].value;
-            state.stt = ix;
+            state.curr_index = ix;
             // strcpy(state.label, result.classification[ix].label);
         }
     }
@@ -167,9 +168,12 @@ void loop()
     ei_printf("    anomaly score: %.3f\r\n", result.anomaly);
 #endif
 
-    Serial.println(state.stt);
-    Uart1.print(state.stt);
-    delay(2000);
+    if (err == EI_IMPULSE_OK && state.curr_index != state.prev_index)
+    {
+        Serial.println(state.curr_index);
+        Uart1.print(state.curr_index);
+        state.prev_index = state.curr_index;
+    }
 }
 
 #if !defined(EI_CLASSIFIER_SENSOR) || (EI_CLASSIFIER_SENSOR != EI_CLASSIFIER_SENSOR_FUSION && EI_CLASSIFIER_SENSOR != EI_CLASSIFIER_SENSOR_ACCELEROMETER)
